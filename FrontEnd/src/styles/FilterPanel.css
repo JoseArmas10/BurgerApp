@@ -1,0 +1,234 @@
+/* Filter Panel Styles */
+.filter-panel {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.filter-header h5 {
+  color: #2c3e50;
+  font-weight: 700;
+  margin: 0;
+}
+
+.filter-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.filter-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.filter-card .card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: none;
+  padding: 12px 20px;
+}
+
+.filter-card .card-header h6 {
+  color: white;
+  margin: 0;
+  font-weight: 600;
+}
+
+.filter-card .card-body {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+/* Search Input */
+.search-input {
+  border-radius: 10px;
+  border: 2px solid rgba(220, 53, 69, 0.2);
+  padding: 12px 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Form Controls */
+.form-check {
+  margin-bottom: 8px;
+}
+
+.form-check-input:checked {
+  background-color: var(--red);
+  border-color: var(--red);
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-check-label {
+  font-weight: 500;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.form-check-label:hover {
+  color: var(--red);
+}
+
+/* Range Inputs */
+.form-range {
+  margin: 10px 0;
+}
+
+.form-range::-webkit-slider-thumb {
+  background: var(--red);
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.form-range::-moz-range-thumb {
+  background: var(--red);
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.form-range::-webkit-slider-track {
+  background: linear-gradient(to right, #e9ecef, var(--red));
+  border-radius: 5px;
+  height: 8px;
+}
+
+.form-range::-moz-range-track {
+  background: linear-gradient(to right, #e9ecef, var(--red));
+  border-radius: 5px;
+  height: 8px;
+}
+
+/* Price Display */
+.price-display {
+  text-align: center;
+}
+
+.price-display .badge {
+  font-size: 0.9rem;
+  padding: 8px 15px;
+  background: linear-gradient(45deg, var(--red), #ff6b6b) !important;
+}
+
+/* Sort Select */
+.form-select {
+  border-radius: 10px;
+  border: 2px solid rgba(220, 53, 69, 0.2);
+  padding: 12px 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.form-select:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Clear Filters Button */
+.clear-filters-btn {
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid #dc3545;
+}
+
+.clear-filters-btn:hover {
+  background: #dc3545;
+  border-color: #dc3545;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+}
+
+/* Rating Stars */
+.form-check-label .bi-star-fill {
+  color: #ffc107;
+  margin-right: 2px;
+}
+
+.form-check-label .bi-star {
+  color: #dee2e6;
+  margin-right: 2px;
+}
+
+/* Mobile Styles */
+@media (max-width: 991.98px) {
+  .offcanvas-body {
+    padding: 20px;
+  }
+  
+  .filter-card {
+    margin-bottom: 15px;
+  }
+  
+  .offcanvas-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+  
+  .offcanvas-title {
+    font-weight: 700;
+  }
+  
+  .btn-close {
+    filter: invert(1);
+  }
+}
+
+/* Animation for filter cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filter-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.filter-card:nth-child(1) { animation-delay: 0.1s; }
+.filter-card:nth-child(2) { animation-delay: 0.2s; }
+.filter-card:nth-child(3) { animation-delay: 0.3s; }
+.filter-card:nth-child(4) { animation-delay: 0.4s; }
+.filter-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* Scrollbar Styling */
+.filter-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-panel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.filter-panel::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, var(--red), #ff6b6b);
+  border-radius: 3px;
+}
+
+.filter-panel::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #c82333, var(--red));
+}

@@ -1,0 +1,271 @@
+/* Locations Page Styles */
+
+.locations-hero {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  color: white;
+  padding: 4rem 0 3rem;
+}
+
+.locations-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.locations-subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Location Status */
+.location-status {
+  background-color: #f8f9fa;
+}
+
+/* Branch Cards */
+.branch-card {
+  border: none;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+}
+
+.branch-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+.branch-name {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.branch-info {
+  color: #6c757d;
+}
+
+.delivery-info {
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.delivery-info:hover {
+  border-color: #ff6b35;
+  background-color: #fff !important;
+}
+
+/* Branch Selector Cards for Map View */
+.branch-selector-card {
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.branch-selector-card:hover {
+  border-color: #ff6b35;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
+}
+
+.branch-selector-card.selected {
+  border-color: #ff6b35;
+  background-color: #fff5f2;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+}
+
+/* View Controls */
+.view-controls {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Sticky Sidebar */
+.sticky-sidebar {
+  position: sticky;
+  top: 20px;
+}
+
+/* Rating Stars */
+.rating-stars i {
+  font-size: 0.9rem;
+}
+
+.rating-text {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Branch Features */
+.branch-features .badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Map Popup Styles */
+.map-popup {
+  min-width: 200px;
+}
+
+.map-popup h6 {
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.map-popup .small {
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.map-popup .badge {
+  font-size: 0.7rem;
+}
+
+.map-popup .rating-stars i {
+  font-size: 0.7rem;
+}
+
+/* User Marker Custom Style */
+.leaflet-marker-icon.user-marker {
+  filter: hue-rotate(120deg) brightness(1.2);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .locations-title {
+    font-size: 2.5rem;
+  }
+  
+  .locations-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .sticky-sidebar {
+    position: static;
+    margin-top: 2rem;
+  }
+  
+  .delivery-info {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .locations-hero {
+    padding: 3rem 0 2rem;
+  }
+  
+  .locations-title {
+    font-size: 2rem;
+  }
+  
+  .locations-subtitle {
+    font-size: 1rem;
+  }
+  
+  .branch-card .row > .col-md-8,
+  .branch-card .row > .col-md-4 {
+    margin-bottom: 1rem;
+  }
+  
+  .view-controls .d-flex {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start !important;
+  }
+  
+  .btn-group {
+    width: 100%;
+  }
+  
+  .btn-group .btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 576px) {
+  .locations-hero {
+    padding: 2rem 0;
+  }
+  
+  .branch-selector-card {
+    margin-bottom: 0.5rem;
+  }
+  
+  .delivery-info {
+    text-align: left !important;
+  }
+  
+  .delivery-info > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .delivery-info i {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* Animation for loading states */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.branch-card.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Custom alert styles */
+.alert {
+  border-radius: 12px;
+  border: none;
+}
+
+.alert-success {
+  background-color: #d1f2eb;
+  color: #0f5132;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  color: #664d03;
+}
+
+.alert-info {
+  background-color: #cfe2ff;
+  color: #084298;
+}
+
+/* Modal customization */
+.modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.modal-header {
+  border-bottom: 1px solid #e9ecef;
+  padding: 1.5rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-title {
+  color: #2c3e50;
+  font-weight: 600;
+}
