@@ -15,12 +15,12 @@ if "%ERRORLEVEL%"=="0" (
 
 echo.
 echo [2/3] Starting Backend Server...
-cd /d "c:\Users\Jose_\OneDrive\Documents\Jose\Proyectos\BurgerApp\BackEnd"
+cd /d "%~dp0BackEnd"
 start "Backend Server" cmd /k "npm run dev"
 
 echo.
 echo [3/3] Starting Frontend Development Server...
-cd /d "c:\Users\Jose_\OneDrive\Documents\Jose\Proyectos\BurgerApp\FrontEnd"
+cd /d "%~dp0FrontEnd"
 start "Frontend Server" cmd /k "npm start"
 
 echo.
