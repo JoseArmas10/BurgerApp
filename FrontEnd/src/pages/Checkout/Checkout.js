@@ -3,14 +3,12 @@ import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import Layout from "../../components/Layouts/Layout";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
-import { useOrders } from "../../context/OrderContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/CheckoutStyle.css";
 
 const Checkout = () => {
   const { cartItems, getCartTotal, clearCart } = useCart();
   const { currentUser } = useAuth();
-  const { addOrder } = useOrders();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -173,65 +171,65 @@ const Checkout = () => {
   const processOrder = async () => {
     setIsProcessing(true);
 
-    // Simulate payment processing with more realistic steps
     try {
-      // Step 1: Validate payment
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Import orderService if not already imported
+      const { orderService } = await import('../../services/apiService');
       
-      // Step 2: Process payment
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Step 3: Confirm order and create order record
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Create order data
+      // Prepare order data for backend
       const orderData = {
-        total: total,
         items: cartItems.map(item => ({
-          id: item.id,
-          name: item.title,
-          price: item.price,
+          product: item.id, // Assuming this is the product ID
           quantity: item.quantity,
-          image: item.image
+          price: item.price
         })),
-        deliveryAddress: {
-          street: formData.address,
-          city: formData.city,
-          state: formData.state,
-          zipCode: formData.zipCode,
+        deliveryInfo: {
+          type: formData.deliveryType,
+          address: formData.deliveryType === 'delivery' ? {
+            street: formData.address,
+            city: formData.city,
+            state: formData.state,
+            zipCode: formData.zipCode
+          } : null,
           instructions: formData.specialInstructions
         },
-        paymentMethod: formData.paymentMethod === 'credit' ? 'Credit Card' : 
-                      formData.paymentMethod === 'paypal' ? 'PayPal' : 'Cash',
-        estimatedDelivery: formData.deliveryTime === 'asap' ? '30-45 min' : 
-                          formData.deliveryTime === '1hour' ? '60-75 min' : '90-120 min',
-        deliveryType: formData.deliveryType
+        customerInfo: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone
+        },
+        payment: {
+          method: formData.paymentMethod === 'credit' ? 'card' : formData.paymentMethod,
+          amount: total
+        }
       };
 
-      // Add order to user's order history
-      if (currentUser) {
-        addOrder(orderData);
+      // Call backend API to create order
+      const response = await orderService.createOrder(orderData);
+      
+      if (response.success) {
+        // Success
+        setOrderSuccess(true);
+        clearCart();
+        
+        // Scroll to top to show success message
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Auto redirect after showing success
+        setTimeout(() => {
+          if (currentUser) {
+            navigate("/orders"); // Redirect to orders page
+          } else {
+            navigate("/");
+          }
+        }, 4000);
+      } else {
+        throw new Error(response.message || 'Order creation failed');
       }
       
-      // Success
-      setOrderSuccess(true);
-      clearCart();
-      
-      // Scroll to top to show success message
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      
-      // Auto redirect after showing success
-      setTimeout(() => {
-        if (currentUser) {
-          navigate("/profile"); // Redirect to profile to see the order
-        } else {
-          navigate("/");
-        }
-      }, 4000);
-      
     } catch (error) {
-      console.error("Payment failed:", error);
-      setErrors({ submit: "Payment processing failed. Please try again." });
+      console.error("Order processing failed:", error);
+      setErrors({ submit: error.message || "Order processing failed. Please try again." });
     } finally {
       setIsProcessing(false);
     }

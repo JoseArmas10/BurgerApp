@@ -146,8 +146,8 @@ router.post('/', protect, [
     .isEmail()
     .withMessage('Valid email is required'),
   body('customerInfo.phone')
-    .isMobilePhone()
-    .withMessage('Valid phone number is required'),
+    .isLength({ min: 8 })
+    .withMessage('Phone number must be at least 8 characters'),
   body('payment.method')
     .isIn(['card', 'paypal', 'cash', 'apple-pay', 'google-pay'])
     .withMessage('Invalid payment method')
@@ -277,7 +277,8 @@ router.post('/', protect, [
       updatedBy: req.user.id
     }];
 
-    const order = await Order.create(orderData);
+    const order = new Order(orderData);
+    await order.save();
 
     // Update product stock
     for (const item of processedItems) {

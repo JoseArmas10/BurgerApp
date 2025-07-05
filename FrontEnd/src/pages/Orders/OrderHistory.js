@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Badge, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Badge, Button, Spinner, Alert, Modal, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Layout from '../../components/Layouts/Layout';
 import { useAuth } from '../../context/AuthContext';
@@ -11,8 +11,11 @@ const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [cancellingOrder, setCancellingOrder] = useState(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
   const { currentUser, isAuthenticated } = useAuth();
-  const { showError } = useToast();
+  const { showError, showSuccess } = useToast();
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -28,7 +31,7 @@ const OrderHistory = () => {
           sort: '-createdAt',
           limit: 20 
         });
-        setOrders(response.orders || []);
+        setOrders(response.data || []);
       } catch (error) {
         console.error('Error loading orders:', error);
         const errorMessage = error.message || 'Error al cargar el historial de pedidos';
@@ -49,7 +52,7 @@ const OrderHistory = () => {
         sort: '-createdAt',
         limit: 20 
       });
-      setOrders(response.orders || []);
+      setOrders(response.data || []);
     } catch (error) {
       console.error('Error loading orders:', error);
       const errorMessage = error.message || 'Error al cargar el historial de pedidos';
@@ -100,6 +103,47 @@ const OrderHistory = () => {
       style: 'currency',
       currency: 'USD'
     }).format(price);
+  };
+
+  // Function to check if order can be cancelled
+  const canCancelOrder = (order) => {
+    return ['pending', 'confirmed'].includes(order.status?.toLowerCase());
+  };
+
+  // Function to initiate order cancellation
+  const handleCancelOrder = (order) => {
+    setCancellingOrder(order);
+    setShowCancelModal(true);
+    setCancelReason('');
+  };
+
+  // Function to confirm order cancellation
+  const confirmCancelOrder = async () => {
+    if (!cancellingOrder) return;
+
+    try {
+      setLoading(true);
+      await orderService.cancelOrder(cancellingOrder._id, cancelReason);
+      
+      // Update the orders list
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order._id === cancellingOrder._id 
+            ? { ...order, status: 'cancelled' }
+            : order
+        )
+      );
+      
+      showSuccess('Pedido cancelado exitosamente');
+      setShowCancelModal(false);
+      setCancellingOrder(null);
+      setCancelReason('');
+    } catch (error) {
+      console.error('Error cancelling order:', error);
+      showError(error.message || 'Error al cancelar el pedido');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isAuthenticated()) {
@@ -202,19 +246,19 @@ const OrderHistory = () => {
                           <Col md={4} className="text-md-end">
                             <div className="order-summary">
                               <div className="order-total mb-2">
-                                <strong>Total: {formatPrice(order.totalAmount)}</strong>
+                                <strong>Total: {formatPrice(order.pricing?.total || 0)}</strong>
                               </div>
-                              {order.deliveryAddress && (
+                              {order.deliveryInfo?.address && (
                                 <div className="delivery-address mb-2">
                                   <small className="text-muted">
-                                    <i className="bi bi-geo-alt"></i> {order.deliveryAddress.street}, {order.deliveryAddress.city}
+                                    <i className="bi bi-geo-alt"></i> {order.deliveryInfo.address.street}, {order.deliveryInfo.address.city}
                                   </small>
                                 </div>
                               )}
-                              {order.paymentMethod && (
+                              {order.payment?.method && (
                                 <div className="payment-method mb-2">
                                   <small className="text-muted">
-                                    <i className="bi bi-credit-card"></i> {order.paymentMethod}
+                                    <i className="bi bi-credit-card"></i> {order.payment.method}
                                   </small>
                                 </div>
                               )}
@@ -224,9 +268,9 @@ const OrderHistory = () => {
                       </Card.Body>
                       <Card.Footer className="d-flex justify-content-between align-items-center">
                         <div>
-                          {order.estimatedDeliveryTime && (
+                          {order.deliveryInfo?.estimatedTime && (
                             <small className="text-muted">
-                              <i className="bi bi-clock"></i> Tiempo estimado: {order.estimatedDeliveryTime} min
+                              <i className="bi bi-clock"></i> Tiempo estimado: {order.deliveryInfo.estimatedTime} min
                             </small>
                           )}
                         </div>
@@ -235,10 +279,20 @@ const OrderHistory = () => {
                             variant="outline-primary" 
                             size="sm"
                             as={Link}
-                            to={`/order/${order._id}`}
+                            to={`/orders/${order._id}`}
                           >
                             Ver Detalles
                           </Button>
+                          {canCancelOrder(order) && (
+                            <Button 
+                              variant="outline-danger" 
+                              size="sm" 
+                              className="ms-2"
+                              onClick={() => handleCancelOrder(order)}
+                            >
+                              Cancelar
+                            </Button>
+                          )}
                           {order.status === 'delivered' && (
                             <Button 
                               variant="outline-success" 
@@ -258,6 +312,34 @@ const OrderHistory = () => {
             </Col>
           </Row>
         </Container>
+
+        {/* Cancel Order Modal */}
+        <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Cancelar Pedido</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>¿Estás seguro de que deseas cancelar este pedido?</p>
+            <Form.Group controlId="cancelReason">
+              <Form.Label>Razón de la cancelación (opcional)</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                placeholder="Escribe aquí tu razón para cancelar el pedido"
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
+              Cerrar
+            </Button>
+            <Button variant="danger" onClick={confirmCancelOrder} disabled={loading}>
+              {loading ? <Spinner animation="border" size="sm" /> : 'Cancelar Pedido'}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </section>
     </Layout>
   );

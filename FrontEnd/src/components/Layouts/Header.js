@@ -70,10 +70,12 @@ const Header = () => {
                       <i className="bi bi-person me-2"></i>
                       Mi Perfil
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/orders">
-                      <i className="bi bi-bag-check me-2"></i>
-                      Mis Pedidos
-                    </Dropdown.Item>
+                    {currentUser.role !== 'admin' && (
+                      <Dropdown.Item as={Link} to="/orders">
+                        <i className="bi bi-bag-check me-2"></i>
+                        Mis Pedidos
+                      </Dropdown.Item>
+                    )}
                     {currentUser.role === 'admin' && (
                       <>
                         <Dropdown.Divider />

@@ -33,18 +33,31 @@ const Shop = () => {
     const loadProducts = async () => {
       setIsLoading(true);
       try {
-        // Try to load from backend first
-        const response = await productService.getProducts({ 
-          category: activeCategory === "all" ? undefined : activeCategory 
-        });
-        setProducts(response.data || response.products || response);
+        // Try to load from backend first - only get pet products
+        const response = await productService.getProducts();
+        const allProducts = response.data || response.products || response;
+        
+        // Filter to only show pet products (treats, toys)
+        const petProducts = allProducts.filter(product => 
+          product.category === 'treats' || product.category === 'toys'
+        );
+        
+        // Then filter by active category if needed
+        const filteredProducts = activeCategory === "all" 
+          ? petProducts 
+          : petProducts.filter(product => product.category === activeCategory);
+          
+        setProducts(filteredProducts);
         setUseBackend(true);
       } catch (error) {
         console.warn('Backend not available, using local data:', error);
-        // Use local data as fallback
+        // Use local data as fallback - only show pet products
+        const petProducts = shopProducts.filter(item => 
+          item.category === 'treats' || item.category === 'toys'
+        );
         const filteredProducts = activeCategory === "all" 
-          ? shopProducts 
-          : shopProducts.filter(item => item.category === activeCategory);
+          ? petProducts 
+          : petProducts.filter(item => item.category === activeCategory);
         setProducts(filteredProducts);
         setUseBackend(false);
       } finally {
@@ -84,10 +97,8 @@ const Shop = () => {
   // Shop categories for pets
   const shopCategories = [
     { id: "all", name: "All Products", icon: "bi-grid-fill" },
-    { id: "treats", name: "Treats", icon: "bi-award-fill" },
-    { id: "cat", name: "Cat Products", icon: "bi-heart-fill" },
-    { id: "dental", name: "Dental Care", icon: "bi-scissors" },
-    { id: "supplements", name: "Supplements", icon: "bi-capsule" }
+    { id: "treats", name: "Pet Treats", icon: "bi-award-fill" },
+    { id: "toys", name: "Pet Toys", icon: "bi-heart-fill" }
   ];
 
   // Filter products by category - ensure it's always an array

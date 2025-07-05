@@ -33,19 +33,31 @@ const Menu = () => {
     const loadProducts = async () => {
       setIsLoading(true);
       try {
-        // Try to load from backend first
-        const response = await productService.getProducts({ 
-          category: activeCategory === "all" ? undefined : activeCategory 
-        });
-        const products = response.data || response.products || response;
-        setProducts(products);
+        // Try to load from backend first - only get restaurant products
+        const response = await productService.getProducts();
+        const allProducts = response.data || response.products || response;
+        
+        // Filter to only show restaurant products (burgers, sides, drinks, desserts)
+        const restaurantProducts = allProducts.filter(product => 
+          ['burgers', 'sides', 'drinks', 'desserts'].includes(product.category)
+        );
+        
+        // Then filter by active category if needed
+        const filteredProducts = activeCategory === "all" 
+          ? restaurantProducts 
+          : restaurantProducts.filter(product => product.category === activeCategory);
+          
+        setProducts(filteredProducts);
         setUseBackend(true);
       } catch (error) {
         console.warn('Backend not available, using local data:', error);
-        // Use local data as fallback
+        // Use local data as fallback - only show restaurant products
+        const restaurantProducts = menuProducts.filter(item => 
+          ['burgers', 'sides', 'drinks', 'desserts'].includes(item.category)
+        );
         const filteredProducts = activeCategory === "all" 
-          ? menuProducts 
-          : menuProducts.filter(item => item.category === activeCategory);
+          ? restaurantProducts 
+          : restaurantProducts.filter(item => item.category === activeCategory);
         setProducts(filteredProducts);
         setUseBackend(false);
       } finally {

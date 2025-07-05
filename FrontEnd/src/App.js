@@ -18,6 +18,7 @@ import ProductDetail from "./pages/Product/ProductDetail";
 import Locations from "./pages/Locations/Locations";
 import Profile from "./pages/Profile/Profile";
 import OrderHistory from "./pages/Orders/OrderHistory";
+import OrderDetail from "./pages/Orders/OrderDetail";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import CartDropdown from "./components/CartDropdown";
 
@@ -44,6 +45,7 @@ function App() {
                   <Route path="/locations" element={<Locations />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/orders" element={<OrderHistory />} />
+                  <Route path="/orders/:id" element={<OrderDetail />} />
                   <Route path="/admin" element={<AdminDashboard />} />
                 </Routes>
               </Router>

@@ -4,7 +4,7 @@ const orderSchema = new mongoose.Schema({
   orderNumber: {
     type: String,
     unique: true,
-    required: true
+    index: true
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -218,22 +218,33 @@ orderSchema.index({ createdAt: -1 });
 // Pre-save middleware to generate order number
 orderSchema.pre('save', async function(next) {
   if (this.isNew && !this.orderNumber) {
-    const date = new Date();
-    const year = date.getFullYear().toString().substr(-2);
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    
-    // Get the count of orders for today
-    const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
-    
-    const todayOrdersCount = await this.constructor.countDocuments({
-      createdAt: { $gte: startOfDay, $lt: endOfDay }
-    });
-    
-    const orderSequence = (todayOrdersCount + 1).toString().padStart(3, '0');
-    this.orderNumber = `BA${year}${month}${day}${orderSequence}`;
+    try {
+      const date = new Date();
+      const year = date.getFullYear().toString().slice(-2);
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      
+      // Get the count of orders for today
+      const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+      
+      const todayOrdersCount = await this.constructor.countDocuments({
+        createdAt: { $gte: startOfDay, $lt: endOfDay }
+      });
+      
+      const orderSequence = (todayOrdersCount + 1).toString().padStart(3, '0');
+      this.orderNumber = `BA${year}${month}${day}${orderSequence}`;
+    } catch (error) {
+      console.error('Error generating order number:', error);
+      return next(error);
+    }
   }
+  
+  // Validate that orderNumber exists before saving
+  if (!this.orderNumber) {
+    return next(new Error('Order number could not be generated'));
+  }
+  
   next();
 });
 

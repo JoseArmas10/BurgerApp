@@ -1,46 +1,53 @@
+# ===================================
 # Dependencies
+# ===================================
 node_modules/
-*/node_modules/
 
-# Environment variables
+# ===================================
+# Environment Variables
+# ===================================
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
 
+# ===================================
 # Logs
+# ===================================
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-*.log
 
-# Runtime data
+# ===================================
+# Build & Distribution
+# ===================================
+build/
+dist/
+coverage/
+.nyc_output
+
+# ===================================
+# Runtime & Process Files
+# ===================================
 pids
 *.pid
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# nyc test coverage
-.nyc_output
-
-# Build directories
-build/
-dist/
-
-# IDE files
+# ===================================
+# IDE & Editor Files
+# ===================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS generated files
+# ===================================
+# OS Generated Files
+# ===================================
 .DS_Store
 .DS_Store?
 ._*
@@ -49,16 +56,20 @@ dist/
 ehthumbs.db
 Thumbs.db
 
-# MongoDB data (if running locally)
+# ===================================
+# Project Specific
+# ===================================
+# MongoDB data
 mongodb-data/
 
-# Uploads
+# File uploads
+uploads/
 BackEnd/uploads/products/
 
 # Temporary files
 *.tmp
 *.temp
 
-# Package manager
+# Package managers
 package-lock.json
 yarn.lock

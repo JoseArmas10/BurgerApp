@@ -101,10 +101,10 @@ After running the seed script, you can login with:
 
 **Admin Account:**
 - Email: `admin@burgerapp.com`
-- Password: `admin123`
+- Password: `admin123456`
 
 **User Account:**
-- Email: `john@example.com`
+- Email: `john.doe@example.com`
 - Password: `password123`
 
 ## Development
